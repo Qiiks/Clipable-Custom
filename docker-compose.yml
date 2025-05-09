@@ -1,0 +1,66 @@
+version: '3.1'
+
+services:
+  postgres:
+    image: postgres:14
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U postgres"]
+      interval: 1s
+      timeout: 5s
+      retries: 5
+
+  minio:
+    image: minio/minio
+    volumes:
+      - minio_data:/data
+    # ports:
+    #   - 9001:9001
+    environment:
+      - "MINIO_ACCESS_KEY=minio"
+      - "MINIO_SECRET_KEY=myminiokeythatishouldchange123"
+    command: server /data --console-address ":9001"
+
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set clipable http://minio:9000 minio myminiokeythatishouldchange123;
+      /usr/bin/mc mb clipable/clips;
+      exit 0;
+      "
+  clipable:
+    image: ghcr.io/clipable/clipable:latest
+    # All of these environment variables are documented here: https://github.com/clipable/clipable/wiki/Environment-Variables
+    environment:
+      MAX_UPLOAD_SIZE: 5GB
+      FFMPEG_CONCURRENCY: 1 
+      FFMPEG_THREADS: 0
+      FFMPEG_PRESET: medium
+      FFMPEG_TUNE: film
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: postgres
+      DB_IDHASHKEY: mydbidkeythatishouldchange123
+      COOKIE_KEY: mycookiekey12345
+      S3_BUCKET: clips
+      S3_ACCESS: minio
+      S3_SECRET: myminiokeythatishouldchange123
+      S3_ADDRESS: minio:9000
+      S3_SECURE: false
+    ports:
+      - 80:80
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pg_data: {}
+  minio_data: {}

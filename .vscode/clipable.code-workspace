@@ -1,0 +1,29 @@
+{
+  "folders": [
+    {
+      "name": ".github",
+      "path": "../.github"
+    },
+    {
+      "name": ".vscode",
+      "path": "../.vscode"
+    },
+    {
+      "name": "backend",
+      "path": "../backend"
+    },
+    {
+      "name": "frontend",
+      "path": "../frontend"
+    },
+    {
+      "name": ".github",
+      "path": "../.github"
+    }
+  ],
+  "settings": {
+    "typescript.tsdk": "frontend/node_modules/.pnpm/typescript@4.9.5/node_modules/typescript/lib",
+    "typescript.enablePromptUseWorkspaceTsdk": true,
+    "eslint.workingDirectories": ["frontend"]
+  }
+}

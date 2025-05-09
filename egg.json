@@ -1,0 +1,122 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2025-05-09T00:00:00-04:00",
+    "name": "Clipable",
+    "author": "sanve@example.com",
+    "description": "A self-hosted video clip sharing platform with automatic 5GB storage management. Optimized for Oracle Cloud E5.Flex (4 vCPU, 18GB RAM)",
+    "features": ["mysql", "minio"],
+    "docker_images": {
+        "ghcr.io/aperim/nvidia-cuda-ffmpeg:12.2.2-6.1.1-ubuntu22.04-0.3.6": "ghcr.io/aperim/nvidia-cuda-ffmpeg:12.2.2-6.1.1-ubuntu22.04-0.3.6"
+    },
+    "file_denylist": [],
+    "startup": "supervisord -c ./supervisord.conf",
+    "config": {
+        "files": "{}",
+        "startup": "{\r\n    \"done\": \"Server shutting down...\"\r\n}",
+        "logs": "{}",
+        "stop": "^C"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!\/bin\/bash\r\n# Clipable Installation Script\r\n\r\napt update\r\napt install -y --no-install-recommends curl nginx nodejs npm supervisor git\r\nnpm install -g pnpm\r\n\r\ncd \/mnt\/server\r\n\r\n# Set environment variables for optimal performance\r\nexport GOMAXPROCS=4\r\nexport NODE_OPTIONS=--max-old-space-size=14336\r\n\r\n# Clone your forked repository (YOU NEED TO REPLACE THIS URL with your fork)\r\necho \"Please replace GITHUB_USERNAME with your GitHub username in egg.json after forking the repository\"\r\ngit clone https://github.com/GITHUB_USERNAME/clipable.git .\r\n\r\n# Build backend with optimization flags\r\ncd backend\r\ngo build -o clipable -ldflags=\"-s -w\" -tags=muslc\r\n\r\n# Build frontend\r\ncd ..\/frontend\r\npnpm install\r\nNODE_ENV=production pnpm build\r\n\r\n# Copy configuration files\r\ncp ..\/nginx.conf \/etc\/nginx\/nginx.conf\r\ncp ..\/supervisord.conf .\/supervisord.conf",
+            "container": "golang:alpine",
+            "entrypoint": "ash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Database Host",
+            "description": "The host address for the MySQL database.",
+            "env_variable": "DB_HOST",
+            "default_value": "127.0.0.1",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:32"
+        },
+        {
+            "name": "Database Port",
+            "description": "The port for the MySQL database.",
+            "env_variable": "DB_PORT",
+            "default_value": "3306",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|numeric|max:65535"
+        },
+        {
+            "name": "Database Name",
+            "description": "The name of the MySQL database.",
+            "env_variable": "DB_NAME",
+            "default_value": "clipable",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:32"
+        },
+        {
+            "name": "Database User",
+            "description": "The username for the MySQL database.",
+            "env_variable": "DB_USER",
+            "default_value": "clipable",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:32"
+        },
+        {
+            "name": "Database Password",
+            "description": "The password for the MySQL database.",
+            "env_variable": "DB_PASS",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string"
+        },
+        {
+            "name": "S3 Address",
+            "description": "The address for the S3/MinIO server.",
+            "env_variable": "S3_ADDRESS",
+            "default_value": "127.0.0.1:9000",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string"
+        },
+        {
+            "name": "S3 Access Key",
+            "description": "The access key for the S3/MinIO server.",
+            "env_variable": "S3_ACCESS",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string"
+        },
+        {
+            "name": "S3 Secret Key",
+            "description": "The secret key for the S3/MinIO server.",
+            "env_variable": "S3_SECRET",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string"
+        },
+        {
+            "name": "S3 Bucket",
+            "description": "The bucket name for S3/MinIO storage.",
+            "env_variable": "S3_BUCKET",
+            "default_value": "clipable",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string"
+        },
+        {
+            "name": "S3 Secure",
+            "description": "Whether to use HTTPS for S3/MinIO connections.",
+            "env_variable": "S3_SECURE",
+            "default_value": "false",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|boolean"
+        }
+    ]
+}
