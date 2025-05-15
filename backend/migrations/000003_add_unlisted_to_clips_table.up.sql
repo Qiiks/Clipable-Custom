@@ -1,1 +1,1 @@
-ALTER TABLE "clips" ADD "unlisted" boolean NOT NULL DEFAULT false;
+ALTER TABLE clips ADD COLUMN unlisted BOOLEAN NOT NULL DEFAULT FALSE;

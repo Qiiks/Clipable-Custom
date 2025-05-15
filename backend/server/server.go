@@ -11,6 +11,7 @@ import (
 	"webserver/modelsx"
 	"webserver/routes"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/gorilla/sessions"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -18,13 +19,8 @@ import (
 	"golang.org/x/crypto/pbkdf2"
 
 	"github.com/golang-migrate/migrate/v4"
-	// Migrate Postgres driver import
-	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	// Migrate file driver import
 	_ "github.com/golang-migrate/migrate/v4/source/file"
-
-	// Postgres driver import
-	_ "github.com/jackc/pgx/v4/stdlib"
 
 	. "github.com/docker/go-units"
 	"github.com/minio/minio-go/v7"
@@ -40,7 +36,14 @@ type Server struct {
 // New creates a server based on config.Config object
 func New(cfg *config.Config) (*Server, error) {
 	//boil.DebugMode = cfg.Debug
-	db, err := sql.Open("pgx", fmt.Sprintf("dbname=%s host=%s port=%s user=%s password=%s sslmode=disable", cfg.DB.Name, cfg.DB.Host, cfg.DB.Port, cfg.DB.User, cfg.DB.Password))
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		cfg.DB.User,
+		cfg.DB.Password,
+		cfg.DB.Host,
+		cfg.DB.Port,
+		cfg.DB.Name,
+	)
+	db, err := sql.Open("mysql", dsn)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to open db connection")
@@ -54,21 +57,23 @@ func New(cfg *config.Config) (*Server, error) {
 		DisableQuote: true,
 	})
 
-	m, err := migrate.New(
-		"file://migrations",
-		fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable&x-multi-statement=true", cfg.DB.User, cfg.DB.Password, cfg.DB.Host, cfg.DB.Port, cfg.DB.Name),
-	)
+	// m, err := migrate.New(
+	// 	"file://migrations",
+	// 	fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable&x-multi-statement=true", cfg.DB.User, cfg.DB.Password, cfg.DB.Host, cfg.DB.Port, cfg.DB.Name),
+	// )
 
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to create migrate object")
-	}
+	// if err != nil {
+	// 	return nil, errors.Wrap(err, "failed to create migrate object")
+	// }
 
 	// Only uncomment this if you need to wipe the db
 	// fmt.Println(m.Force(2))
+	// Only uncomment this if you need to wipe the db
+	// fmt.Println(m.Force(2))
 	// fmt.Println(m.Down())
-	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
-		return nil, errors.Wrap(err, "failed to migrate db")
-	}
+	// if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+	// 	return nil, errors.Wrap(err, "failed to migrate db")
+	// }
 
 	modelsx.SetHashEncoder(cfg.DB.IDHashKey)
 

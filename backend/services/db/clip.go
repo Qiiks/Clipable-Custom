@@ -66,8 +66,8 @@ func (c *clips) Delete(ctx context.Context, clip *models.Clip) error {
 func (c *clips) SearchMany(ctx context.Context, user *models.User, query string) (models.ClipSlice, error) {
 	return models.Clips(modelsx.NewBuilder().
 		Add(qm.Select("*"),
-			qm.Where(`f_concat_ws(' ', title, "description") ILIKE ?`, "%"+query+"%"),
-			qm.OrderBy(`f_concat_ws(' ', title, "description") <-> ?`, "%"+query+"%"),
+			qm.Where(`CONCAT(title, ' ', "description") LIKE ? COLLATE utf8_general_ci`, "%"+query+"%"),
+			qm.OrderBy(`CONCAT(title, ' ', "description") <-> ?`, "%"+query+"%"),
 			qm.Limit(10),
 			qm.Load(models.ClipRels.Creator),
 		).

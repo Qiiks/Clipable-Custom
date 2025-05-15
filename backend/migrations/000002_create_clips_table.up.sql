@@ -1,11 +1,13 @@
-CREATE TABLE IF NOT EXISTS "clips" (
-  id            bigserial                 PRIMARY KEY,
-  title         varchar                   NOT NULL,
-  "description" varchar,
-  creator_id    bigint                    REFERENCES "user" (id) NOT NULL,
-  processing    boolean                   NOT NULL DEFAULT true,
-  created_at    timestamp with time zone  NOT NULL DEFAULT now(),
-  views         bigint                    NOT NULL DEFAULT 0
+CREATE TABLE IF NOT EXISTS clips (
+  id            BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  title         VARCHAR(255) NOT NULL,
+  description   TEXT,
+  creator_id    BIGINT UNSIGNED NOT NULL,
+  processing    BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  views         BIGINT UNSIGNED NOT NULL DEFAULT 0,
+  unlisted      BOOLEAN NOT NULL DEFAULT FALSE,
+  FOREIGN KEY (creator_id) REFERENCES users(id)
 );
 
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_clip_trigram ON "clips" USING gin (f_concat_ws(' ', title, "description") gin_trgm_ops);
+CREATE FULLTEXT INDEX idx_clip_trigram ON clips (title, description);

@@ -15,7 +15,7 @@ echo ">>> MySQL is ready."
 
 # Start MinIO server in background
 echo ">>> Starting MinIO server..."
-./minio server minio_data &
+./clipable/minio server minio_data &
 
 # Wait for MinIO ready
 echo ">>> Waiting for MinIO on port 9000..."
@@ -27,14 +27,14 @@ echo ">>> MinIO is ready."
 
 # Configure MinIO alias
 echo ">>> Configuring MinIO alias..."
-./mc alias set myminio http://127.0.0.1:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD" || echo "Warning: mc alias set failed, may already exist."
+./clipable/mc alias set myminio http://127.0.0.1:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD" || echo "Warning: mc alias set failed, may already exist."
 
 # Create bucket if not exists
 echo ">>> Creating bucket 'clipable' if not exists..."
-./mc mb myminio/clipable || echo "Bucket exists or creation failed, continuing..."
+./clipable/mc mb myminio/clipable || echo "Bucket exists or creation failed, continuing..."
 
 # Start the backend binary
 echo ">>> Starting backend..."
-./clipable &
+./clipable/clipable &
 
 wait

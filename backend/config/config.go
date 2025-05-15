@@ -47,11 +47,11 @@ type Config struct {
 	}
 
 	DB struct {
-		Name     string
-		Host     string
-		Port     string
-		User     string
-		Password string
+		Name     string `envconfig:"db_name"`
+		Host     string `envconfig:"db_host"`
+		Port     string `envconfig:"db_port"`
+		User     string `envconfig:"db_user"`
+		Password string `envconfig:"db_password"`
 
 		IDHashKey string
 	}

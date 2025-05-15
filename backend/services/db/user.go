@@ -43,8 +43,8 @@ func (u *users) SearchMany(ctx context.Context, query string) (models.UserSlice,
 	return models.Users(
 		// TODO: Figure out a good way to not replicate the `f_concat_ws` composite index declaration everywhere
 		qm.Select("*"),
-		qm.Where("f_concat_ws(' ', username, email, firstname, lastname) ILIKE ?", "%"+query+"%"),
-		qm.OrderBy("f_concat_ws(' ', username, email, firstname, lastname) <-> ?", "%"+query+"%"),
+		qm.Where("CONCAT(username, ' ', email, ' ', firstname, ' ', lastname) LIKE ? COLLATE utf8_general_ci", "%"+query+"%"),
+		qm.OrderBy("CONCAT(username, ' ', email, ' ', firstname, ' ', lastname) <-> ?", "%"+query+"%"),
 		qm.Limit(10),
 	).All(ctx, u.db)
 }
