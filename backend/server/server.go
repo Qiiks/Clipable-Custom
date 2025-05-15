@@ -11,16 +11,12 @@ import (
 	"webserver/modelsx"
 	"webserver/routes"
 
-	"github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql"  // MySQL driver required by database/sql
 	"github.com/gorilla/sessions"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/pbkdf2"
-
-	"github.com/golang-migrate/migrate/v4"
-	// Migrate file driver import
-	_ "github.com/golang-migrate/migrate/v4/source/file"
 
 	. "github.com/docker/go-units"
 	"github.com/minio/minio-go/v7"
