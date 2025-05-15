@@ -37,4 +37,9 @@ echo ">>> Creating bucket 'clipable' if not exists..."
 echo ">>> Starting backend..."
 ./clipable/clipable &
 
+# Start the frontend
+echo ">>> Starting frontend..."
+cd frontend
+npm run dev &
+
 wait
