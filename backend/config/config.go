@@ -39,11 +39,11 @@ type Config struct {
 	}
 
 	S3 struct {
-		Address string
-		Secure  bool `default:"false"`
-		Access  string
-		Secret  string
-		Bucket  string
+		Address string `default:"http://172.18.0.3:9000"`
+		Secure  bool   `default:"false"`
+		Access  string `default:"clipableadmin"`
+		Secret  string `default:"clipableadmin"`
+		Bucket  string `default:"clipable"`
 	}
 
 	DB struct {
