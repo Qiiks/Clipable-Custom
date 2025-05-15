@@ -39,8 +39,8 @@ type Config struct {
 	}
 
 	S3 struct {
-		Address string `default:"http://172.18.0.3:9000"`
-		Secure  bool   `default:"false"`
+		Address string `default:"172.18.0.3:9000"`  // MinIO requires just host:port format
+		Secure  bool   `default:"false"`           // Set to true if using HTTPS
 		Access  string `default:"clipableadmin"`
 		Secret  string `default:"clipableadmin"`
 		Bucket  string `default:"clipable"`
