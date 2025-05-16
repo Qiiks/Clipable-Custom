@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
 
+# Pull latest changes from Git
+echo ">>> Pulling latest changes from Git..."
+git pull origin main || echo "Failed to pull changes, continuing..."
+
 echo ">>> Starting server at $(date)"
 echo ">>> Current user: $(whoami)"
 echo ">>> Working directory: $(pwd)"
@@ -32,6 +36,15 @@ echo ">>> Configuring MinIO alias..."
 # Create bucket if not exists
 echo ">>> Creating bucket 'clipable' if not exists..."
 ./clipable/mc mb myminio/clipable || echo "Bucket exists or creation failed, continuing..."
+
+# Build the backend
+echo ">>> Pulling latest changes from Git..."
+git pull origin main || echo "Failed to pull changes, continuing..."
+
+echo ">>> Building backend..."
+cd ./clipable/backend || { echo "Backend directory not found!"; exit 1; }
+go build -o || { echo "Failed to build backend"; exit 1; }
+cd ../..
 
 # Start the backend binary
 echo ">>> Starting backend..."

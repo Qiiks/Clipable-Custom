@@ -43,8 +43,6 @@ func (c *clips) FindMany(ctx context.Context, user *models.User, mods ...qm.Quer
 				qm.Or(models.ClipColumns.Unlisted+"=?", false),
 			}
 		}).
-		// If there was no user, don't show unlisted clips
-		If(user == nil, models.ClipWhere.Unlisted.EQ(false)).
 		Add(qm.Load(models.ClipRels.Creator))...,
 	).All(ctx, c.db)
 }
