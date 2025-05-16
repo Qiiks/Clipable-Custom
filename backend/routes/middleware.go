@@ -203,6 +203,8 @@ func (r *Routes) ParseVars(next http.Handler) http.Handler {
 func getPaginationMods(req *http.Request, paginationColumn, table, idColumn string) []qm.QueryMod {
 	qms := make([]qm.QueryMod, 0)
 
+	// Removing order by parameter logic to simplify query
+	/*
 	operation := "<"
 
 	if order := req.URL.Query().Get("order"); order != "" {
@@ -216,6 +218,7 @@ func getPaginationMods(req *http.Request, paginationColumn, table, idColumn stri
 	} else {
 		qms = append(qms, qm.OrderBy(paginationColumn+" DESC"))
 	}
+	*/
 
 	// Removing index parameter logic to simplify query
 	/*

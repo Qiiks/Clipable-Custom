@@ -4,8 +4,8 @@ set -e
 cd /home/container/clipable
 
 # Pull latest changes from Git
-echo ">>> Pulling latest changes from Git..."
-git pull origin main || echo "Failed to pull changes, continuing..."
+#echo ">>> Pulling latest changes from Git..."
+#git pull origin main || echo "Failed to pull changes, continuing..."
 
 echo ">>> Starting server at $(date)"
 echo ">>> Current user: $(whoami)"
@@ -40,22 +40,22 @@ echo ">>> Creating bucket 'clipable' if not exists..."
 ./mc mb myminio/clipable || echo "Bucket exists or creation failed, continuing..."
 
 # Build the backend
-echo ">>> Pulling latest changes from Git..."
-git pull origin main || echo "Failed to pull changes, continuing..."
+#echo ">>> Pulling latest changes from Git..."
+#git pull origin main || echo "Failed to pull changes, continuing..."
 
 echo ">>> Building backend..."
-export GOTMPDIR=/mnt/server/tmp
+export GOTMPDIR=/home/container/tmp
 cd ./backend || { echo "Backend directory not found!"; exit 1; }
 go build -o ./clipable || { echo "Backend build failed!"; exit 1; }
 cd ../..
 
 # Start the backend binary
 echo ">>> Starting backend..."
-./clipable &
+./clipable/clipable &
 
 # Start the frontend
 echo ">>> Starting frontend..."
-cd ./frontend || { echo "Frontend directory not found!"; exit 1; }
+cd ./clipable/frontend || { echo "Frontend directory not found!"; exit 1; }
 npm install --legacy-peer-deps || { echo "Failed to install frontend dependencies"; exit 1; }
 echo ">>> Starting frontend development server..."
 npm run dev -- -p ${SERVER_PORT}
