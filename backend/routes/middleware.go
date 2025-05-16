@@ -233,6 +233,8 @@ func getPaginationMods(req *http.Request, paginationColumn, table, idColumn stri
 		qms = append(qms, qm.Where("\""+table+"\"."+paginationColumn+" < t2."+paginationColumn))
 	}
 
+	// Removing limit parameter logic to simplify query
+	/*
 	if rawLimit := req.URL.Query().Get("limit"); rawLimit != "" {
 		limit, err := strconv.Atoi(rawLimit)
 
@@ -246,6 +248,7 @@ func getPaginationMods(req *http.Request, paginationColumn, table, idColumn stri
 	} else {
 		qms = append(qms, qm.Limit(200))
 	}
+	*/
 
 	return qms
 }
