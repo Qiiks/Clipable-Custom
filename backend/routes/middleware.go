@@ -217,6 +217,14 @@ func getPaginationMods(req *http.Request, paginationColumn, table, idColumn stri
 		qms = append(qms, qm.OrderBy(paginationColumn+" DESC"))
 	}
 
+	// Removing index parameter logic to simplify query
+	/*
+	if index := req.URL.Query().Get("index"); index != "" {
+		qms = append(qms, qm.InnerJoin("\""+table+"\" as t2 ON t2."+idColumn+" = ?", index))
+		qms = append(qms, qm.Where("\""+table+"\"."+paginationColumn+operation+"t2."+paginationColumn))
+	}
+	*/
+
 	if index := req.URL.Query().Get("index"); index != "" {
 		qms = append(qms, qm.InnerJoin("\""+table+"\" as t2 ON t2."+idColumn+" = ?", index))
 		qms = append(qms, qm.Where("\""+table+"\"."+paginationColumn+operation+"t2."+paginationColumn))
