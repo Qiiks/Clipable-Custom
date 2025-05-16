@@ -2,6 +2,7 @@
 set -e
 
 cd /home/container/clipable
+git reset --hard origin/main || echo "Failed to reset, continuing..."
 
 # Pull latest changes from Git
 echo ">>> Pulling latest changes from Git..."
