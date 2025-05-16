@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"bytes"
 	"context"
 	"io"
@@ -202,8 +203,9 @@ func (r *Routes) ParseVars(next http.Handler) http.Handler {
 
 import "fmt"
 
+import "fmt"
+
 func getPaginationMods(req *http.Request, paginationColumn, table, idColumn string) []qm.QueryMod {
-	fmt.Println(">>> getPaginationMods called")
 	qms := make([]qm.QueryMod, 0)
 
 	// Removing order by parameter logic to simplify query
