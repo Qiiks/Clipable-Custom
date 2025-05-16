@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"fmt"
 	"bytes"
 	"context"
 	"io"
