@@ -218,7 +218,8 @@ func getPaginationMods(req *http.Request, paginationColumn, table, idColumn stri
 	}
 
 	if index := req.URL.Query().Get("index"); index != "" {
-		qms = append(qms, qm.Where(paginationColumn+operation+"(SELECT "+paginationColumn+" FROM \""+table+"\" WHERE "+idColumn+" = ?)", index))
+		qms = append(qms, qm.InnerJoin("\""+table+"\" as t2 ON t2."+idColumn+" = ?").
+			Where("\""+table+"\"."+paginationColumn+operation+"t2."+paginationColumn, index))
 	}
 
 	if rawLimit := req.URL.Query().Get("limit"); rawLimit != "" {
