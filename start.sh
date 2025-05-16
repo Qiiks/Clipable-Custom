@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+cd /home/container/clipable
+
 # Pull latest changes from Git
 echo ">>> Pulling latest changes from Git..."
 git pull origin main || echo "Failed to pull changes, continuing..."
@@ -19,7 +21,7 @@ echo ">>> MySQL is ready."
 
 # Start MinIO server in background
 echo ">>> Starting MinIO server..."
-./clipable/minio server minio_data &
+./minio server minio_data &
 
 # Wait for MinIO ready
 echo ">>> Waiting for MinIO on port 9000..."
@@ -31,28 +33,29 @@ echo ">>> MinIO is ready."
 
 # Configure MinIO alias
 echo ">>> Configuring MinIO alias..."
-./clipable/mc alias set myminio http://127.0.0.1:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD" || echo "Warning: mc alias set failed, may already exist."
+./mc alias set myminio http://127.0.0.1:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD" || echo "Warning: mc alias set failed, may already exist."
 
 # Create bucket if not exists
 echo ">>> Creating bucket 'clipable' if not exists..."
-./clipable/mc mb myminio/clipable || echo "Bucket exists or creation failed, continuing..."
+./mc mb myminio/clipable || echo "Bucket exists or creation failed, continuing..."
 
 # Build the backend
 echo ">>> Pulling latest changes from Git..."
 git pull origin main || echo "Failed to pull changes, continuing..."
 
 echo ">>> Building backend..."
-cd ./clipable/backend || { echo "Backend directory not found!"; exit 1; }
-go build -o || { echo "Failed to build backend"; exit 1; }
+export GOTMPDIR=/mnt/server/tmp
+cd ./backend || { echo "Backend directory not found!"; exit 1; }
+go build -o ./clipable || { echo "Backend build failed!"; exit 1; }
 cd ../..
 
 # Start the backend binary
 echo ">>> Starting backend..."
-./clipable/clipable &
+./clipable &
 
 # Start the frontend
 echo ">>> Starting frontend..."
-cd ./clipable/frontend || { echo "Frontend directory not found!"; exit 1; }
+cd ./frontend || { echo "Frontend directory not found!"; exit 1; }
 npm install --legacy-peer-deps || { echo "Failed to install frontend dependencies"; exit 1; }
 echo ">>> Starting frontend development server..."
 npm run dev -- -p ${SERVER_PORT}
