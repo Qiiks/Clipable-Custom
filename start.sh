@@ -4,8 +4,8 @@ set -e
 cd /home/container/clipable
 
 # Pull latest changes from Git
-#echo ">>> Pulling latest changes from Git..."
-#git pull origin main || echo "Failed to pull changes, continuing..."
+echo ">>> Pulling latest changes from Git..."
+git pull origin main || echo "Failed to pull changes, continuing..."
 
 echo ">>> Starting server at $(date)"
 echo ">>> Current user: $(whoami)"
