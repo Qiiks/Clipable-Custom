@@ -2,9 +2,10 @@ no-tests            = true
 wipe                = true
 add-global-variants = false
 
-[psql]
-dbname = "postgres"
-host   = "localhost"
-port   = 5432
-user   = "postgres"
-sslmode = "disable"
+[mysql]
+dbname  = "s15_data"
+host    = "172.17.0.1"
+port    = 3306  # Confirm this matches your DB_PORT
+user    = "u15_eDdAtz7fUa"
+pass    = "zMYyV+q5O0VAkF=^KxpPXS@A"
+sslmode = "false"

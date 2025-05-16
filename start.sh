@@ -39,7 +39,9 @@ echo ">>> Starting backend..."
 
 # Start the frontend
 echo ">>> Starting frontend..."
-cd frontend
-npm run dev &
+cd ./clipable/frontend || { echo "Frontend directory not found!"; exit 1; }
+npm install --legacy-peer-deps || { echo "Failed to install frontend dependencies"; exit 1; }
+echo ">>> Starting frontend development server..."
+npm run dev -- -p ${SERVER_PORT}
 
 wait

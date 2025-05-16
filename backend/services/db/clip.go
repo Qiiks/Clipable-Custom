@@ -31,7 +31,9 @@ func (c *clips) Find(ctx context.Context, cid int64) (*models.Clip, error) {
 }
 
 func (c *clips) FindMany(ctx context.Context, user *models.User, mods ...qm.QueryMod) (models.ClipSlice, error) {
-	return models.Clips(modelsx.NewBuilder().
+	return models.Clips(modelsx.NewBuilder().Add(
+		qm.Select(models.ClipColumns.ID, models.ClipColumns.Title, models.ClipColumns.Description, models.ClipColumns.Unlisted, models.ClipColumns.CreatorID, models.ClipColumns.CreatedAt, models.ClipColumns.Views, models.ClipColumns.Duration, models.ClipColumns.Processing),
+	).
 		Add(mods...).
 		// If there was a user associated with the query, also show them their unlisted clips.
 		// If the user ID is -1, it's the system trying to get all clips and we shouldn't filter anything
@@ -65,7 +67,7 @@ func (c *clips) Delete(ctx context.Context, clip *models.Clip) error {
 
 func (c *clips) SearchMany(ctx context.Context, user *models.User, query string) (models.ClipSlice, error) {
 	return models.Clips(modelsx.NewBuilder().
-		Add(qm.Select("*"),
+		Add(qm.Select(models.ClipColumns.ID, models.ClipColumns.Title, models.ClipColumns.Description, models.ClipColumns.Unlisted, models.ClipColumns.CreatorID, models.ClipColumns.CreatedAt, models.ClipColumns.Views, models.ClipColumns.Duration, models.ClipColumns.Processing),
 			qm.Where(`CONCAT(title, ' ', "description") LIKE ? COLLATE utf8_general_ci`, "%"+query+"%"),
 			qm.OrderBy(`CONCAT(title, ' ', "description") <-> ?`, "%"+query+"%"),
 			qm.Limit(10),
